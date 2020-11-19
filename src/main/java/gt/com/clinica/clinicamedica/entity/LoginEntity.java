@@ -3,7 +3,6 @@ package gt.com.clinica.clinicamedica.entity;
 public class LoginEntity {
     private String name;
     private String pass;
-    private int range;
 
     public String getName() {
         return name;
@@ -19,13 +18,5 @@ public class LoginEntity {
 
     public void setPass(String pass) {
         this.pass = pass;
-    }
-
-    public int getRange() {
-        return range;
-    }
-
-    public void setRange(int range) {
-        this.range = range;
     }
 }

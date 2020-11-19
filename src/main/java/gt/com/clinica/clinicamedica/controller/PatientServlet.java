@@ -66,8 +66,9 @@ public class PatientServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()){
             if(listPatient !=null) {
                 for(PersonEntity emp : listPatient) {
-                    out.println(gson.toJson(emp));
+                    json.add(gson.toJson(emp));
                 }
+                out.println(json);
             }else {
                 out.println("error");
             }

@@ -14,39 +14,26 @@ import java.util.List;
 
 public class LoginDao {
 
-    public List<String> dinamicMenu(LoginEntity user){
-        List<String> data = new LinkedList<>();
+    public boolean login(LoginEntity user){
         Connection conexion = null;
-        String query1 = "SELECT * FROM users WHERE name =? and pass =?";
-        String query2 = "SELECT * FROM DinamicNav WHERE urange =?";
-
-        try {
+        String query1 = "SELECT name, pass FROM users WHERE name =? and pass =?";
+        try{
             ConectionService con= ConectionService.getInstance();
             conexion = con.getConnection();
             PreparedStatement statement = conexion.prepareStatement(query1);
             statement.setString(1,user.getName());
             statement.setString(2,user.getPass());
-            ResultSet consulta=statement.executeQuery();
-            ResultSet con2;
-            if(consulta.next())
-            {
-                user.setRange(consulta.getInt("urange"));
-                PreparedStatement statement2 = conexion.prepareStatement(query2);
-                statement2.setInt(1, user.getRange());
-                con2=statement2.executeQuery();
-                while (con2.next()) {
-                    data.add(con2.getString("name"));
-                    System.out.println(con2.getString("name"));
-                }
-                return data;
+            ResultSet consulta = statement.executeQuery();
+            if(consulta.next()){
+                conexion.close();
+                return true;
             }else{
-                data.add("usuario no encontrado");
-                return data;
+                conexion.close();
+                return false;
             }
-        } catch (SQLException ex) {
-            System.out.println(ex);
-           data.add("null");
-           return data;
+        }catch (Exception e){
+            e.getCause();
         }
+        return false;
     }
 }

@@ -1,21 +1,17 @@
 package gt.com.clinica.clinicamedica.service;
 
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConectionService {
     Connection conn = null;
     private static Connection dataSource;
     private static ConectionService instance;
-    public String driver = "com.mysql.jdbc.Driver";
-    public String database = "desarrollo";
-    public String hostname = "52.186.140.66";
-    public String port = "3306";
-    public String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database;
-    public String username = "user";
-    public String password = "Aa1234567+";
 
     private ConectionService(){
     }
@@ -27,14 +23,14 @@ public class ConectionService {
         return instance;
     }
 
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection(){
 
         try {
-           // dataSource = (DataSource) new InitialContext().lookup("jdbc/final");
-            Class.forName(driver);
-            dataSource = DriverManager.getConnection(url, username, password);
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource)ctx.lookup("JDBC/clinicaweb");
+            dataSource = ds.getConnection();
         }
-        catch (ClassNotFoundException e) {
+        catch (NamingException | SQLException e) {
         }
         return dataSource;
     }

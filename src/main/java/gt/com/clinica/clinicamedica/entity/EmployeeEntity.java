@@ -3,6 +3,7 @@ package gt.com.clinica.clinicamedica.entity;
 public class EmployeeEntity extends PersonEntity{
     private int idEmpmloyee;
     private int idJob;
+    private String job;
 
     public int getIdEmpmloyee() {
         return idEmpmloyee;
@@ -18,5 +19,14 @@ public class EmployeeEntity extends PersonEntity{
 
     public void setIdJob(int idJob) {
         this.idJob = idJob;
+
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
     }
 }
