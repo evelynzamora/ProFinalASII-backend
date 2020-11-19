@@ -68,8 +68,8 @@ public class PersonEntity {
         this.contactphone = contactphone;
     }
 
-    public Date getBirthdate() {
-        return birthdate;
+    public String getBirthdate() {
+        return String.valueOf(birthdate);
     }
 
     public void setBirthdate(Date birthdate) {

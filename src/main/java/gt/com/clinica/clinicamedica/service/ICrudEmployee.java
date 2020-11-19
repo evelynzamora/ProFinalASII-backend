@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ICrudEmployee {
     public List<EmployeeEntity> listAll();
-    public int deleteemployee(int id);
-    public int updateemployee(EmployeeEntity emp);
-    public int addemployee(EmployeeEntity emp);
+    public boolean deleteemployee(int id);
+    public boolean updateemployee(EmployeeEntity emp);
+    public boolean addemployee(EmployeeEntity emp);
 }
