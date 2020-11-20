@@ -51,8 +51,8 @@ public class MedicineEntity {
         this.description = description;
     }
 
-    public Date getExpirationdate() {
-        return expirationdate;
+    public String getExpirationdate() {
+        return String.valueOf(expirationdate);
     }
 
     public void setExpirationdate(Date expirationdate) {

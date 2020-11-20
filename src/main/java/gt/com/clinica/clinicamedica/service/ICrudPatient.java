@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ICrudPatient {
     public List<PersonEntity> listAll();
-    public int deletepatient(int dpi);
-    public int updatepatient(PersonEntity patient);
-    public int addepatient(PersonEntity patient);
+    public boolean deletepatient(int id);
+    public boolean updatepatient(PersonEntity patient);
+    public boolean addepatient(PersonEntity patient);
 }

@@ -14,7 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PatientDao implements ICrudPatient {
-    final String selectAllPatients = "SELECT * FROM Pacientes";
+    final String selectAllPatients = "SELECT id_person,direccion,fecha_nacimiento,telefono_contacto,dpi,nombre,telefono,apellido " +
+            "FROM pacientes ORDER BY nombre limit 100;";
     @Override
     public List<PersonEntity> listAll() {
         Date date = null;
@@ -60,17 +61,87 @@ public class PatientDao implements ICrudPatient {
     }
 
     @Override
-    public int deletepatient(int dpi) {
-        return 0;
+    public boolean deletepatient(int id) {
+        Connection conexion = null;
+        try{
+            ConectionService con= ConectionService.getInstance();
+            conexion = con.getConnection();
+            PreparedStatement statement = conexion.prepareStatement("DELETE FROM pacientes WHERE id_person = ?;");
+            statement.setInt(1,id);
+            ResultSet consulta = statement.executeQuery();
+            if(!consulta.wasNull()){
+                conexion.close();
+                return true;
+            }else{
+                conexion.close();
+                return false;
+            }
+        }catch (SQLException sqlException){
+            sqlException.getSQLState();
+        }
+        return false;
     }
 
     @Override
-    public int updatepatient(PersonEntity patient) {
-        return 0;
+    public boolean updatepatient(PersonEntity patient) {
+        Connection conexion = null;
+        try{
+            ConectionService con= ConectionService.getInstance();
+            conexion = con.getConnection();
+            PreparedStatement statement = conexion.prepareStatement("UPDATE pacientes SET " +
+                    "direccion=?,fecha_nacimiento=?,telefono_contacto=?,dpi=?,nombre=?,telefono=?,apellido=? " +
+                    "WHERE id_person = ?;");
+            statement.setString(1,patient.getAddress());
+            statement.setString(2,patient.getBirthdate());
+            statement.setInt(3,patient.getContactphone());
+            statement.setInt(4,patient.getDpi());
+            statement.setString(5,patient.getName());
+            statement.setInt(6,patient.getPhone());
+            statement.setString(7,patient.getSurname());
+            statement.setInt(8,patient.getIdPerson());
+            ResultSet consulta = statement.executeQuery();
+            if(!consulta.wasNull()){
+                conexion.close();
+                return true;
+            }else{
+                conexion.close();
+                return false;
+            }
+
+        }catch (SQLException sqlException){
+            sqlException.getSQLState();
+        }
+        return false;
     }
 
     @Override
-    public int addepatient(PersonEntity patient) {
-        return 0;
+    public boolean addepatient(PersonEntity patient) {
+        Connection conexion = null;
+        try{
+            ConectionService con= ConectionService.getInstance();
+            conexion = con.getConnection();
+            PreparedStatement statement = conexion.prepareStatement("INSERT INTO pacientes " +
+                    "(direccion, fecha_nacimiento, telefono_contacto, dpi, nombre, telefono, apellido) " +
+                    "VALUES (?,?,?,?,?,?,?);");
+            statement.setString(1,patient.getAddress());
+            statement.setString(2,patient.getBirthdate());
+            statement.setInt(3,patient.getContactphone());
+            statement.setInt(4,patient.getDpi());
+            statement.setString(5,patient.getName());
+            statement.setInt(6,patient.getPhone());
+            statement.setString(7,patient.getSurname());
+            ResultSet consulta = statement.executeQuery();
+            if(!consulta.wasNull()){
+                conexion.close();
+                return true;
+            }else{
+                conexion.close();
+                return false;
+            }
+
+        }catch (SQLException sqlException){
+            sqlException.getSQLState();
+        }
+        return false;
     }
 }

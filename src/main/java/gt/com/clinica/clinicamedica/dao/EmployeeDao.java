@@ -41,6 +41,7 @@ public class EmployeeDao implements ICrudEmployee {
                 emp.setJob(consulta.getString("Puesto"));
                 listEmployee.add(emp);
             }
+            consulta.close();
             return listEmployee;
         }catch (SQLException e){
             System.out.println("no vamos bien");

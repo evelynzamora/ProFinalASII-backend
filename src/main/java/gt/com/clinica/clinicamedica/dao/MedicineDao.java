@@ -14,7 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MedicineDao implements ICrudMedicine {
-    final String selectAllMedicine = "SELECT * FROM Medicamentos";
+    final String selectAllMedicine = "SELECT IdMedicamento,Nombre,Laboratorio,ViaAdministracion,Descripcion,FechaVencimiento,Lote " +
+            "FROM medicamentos ORDER BY FechaVencimiento LIMIT 100;";
     @Override
     public List<MedicineEntity> listAll() {
         Date date = null;
@@ -59,17 +60,84 @@ public class MedicineDao implements ICrudMedicine {
     }
 
     @Override
-    public int deletemedicine(int id) {
-        return 0;
+    public boolean deletemedicine(int id) {
+
+        Connection conexion = null;
+        try{
+            ConectionService con= ConectionService.getInstance();
+            conexion = con.getConnection();
+            PreparedStatement statement = conexion.prepareStatement("DELETE FROM medicamentos WHERE IdMedicamento = ?;");
+            statement.setInt(1,id);
+            ResultSet consulta = statement.executeQuery();
+            if(!consulta.wasNull()){
+                conexion.close();
+                return true;
+            }else{
+                conexion.close();
+                return false;
+            }
+        }catch (SQLException sqlException){
+            sqlException.getSQLState();
+        }
+        return false;
     }
 
     @Override
-    public int updatemedicine(MedicineEntity med) {
-        return 0;
+    public boolean updatemedicine(MedicineEntity med) {
+        Connection conexion = null;
+        try{
+            ConectionService con= ConectionService.getInstance();
+            conexion = con.getConnection();
+            PreparedStatement statement = conexion.prepareStatement("UPDATE medicamentos SET " +
+                    "Nombre=?,Laboratorio=?,ViaAdministracion=?,Descripcion=?,FechaVencimiento=?,Lote=? WHERE IdMedicamento = ?;");
+            statement.setString(1,med.getName());
+            statement.setString(2,med.getLab());
+            statement.setString(3,med.getAdminway());
+            statement.setString(4,med.getDescription());
+            statement.setDate(5,java.sql.Date.valueOf(med.getExpirationdate()));
+            statement.setInt(6,med.getLots());
+            ResultSet consulta = statement.executeQuery();
+            if(!consulta.wasNull()){
+                conexion.close();
+                return true;
+            }else{
+                conexion.close();
+                return false;
+            }
+
+        }catch (SQLException sqlException){
+            sqlException.getSQLState();
+        }
+        return false;
     }
 
     @Override
-    public int addmedicine(MedicineEntity med) {
-        return 0;
+    public boolean addmedicine(MedicineEntity med) {
+        Connection conexion = null;
+        try{
+            ConectionService con= ConectionService.getInstance();
+            conexion = con.getConnection();
+            PreparedStatement statement = conexion.prepareStatement("INSERT INTO medicamentos " +
+                    "(Nombre, Laboratorio, ViaAdministracion, Descripcion, FechaVencimiento, Lote) " +
+                    "VALUES (?,?,?,?,?,?);");
+            statement.setString(1,med.getName());
+            statement.setString(2,med.getLab());
+            statement.setString(3,med.getAdminway());
+            statement.setString(4,med.getDescription());
+            statement.setDate(5,java.sql.Date.valueOf(med.getExpirationdate()));
+            statement.setInt(6,med.getLots());
+            ResultSet consulta = statement.executeQuery();
+            if(!consulta.wasNull()){
+                conexion.close();
+                return true;
+            }else{
+                conexion.close();
+                return false;
+            }
+
+        }catch (SQLException sqlException){
+            sqlException.getSQLState();
+        }
+        return false;
     }
 }

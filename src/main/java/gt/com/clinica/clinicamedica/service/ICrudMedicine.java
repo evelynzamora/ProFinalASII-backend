@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ICrudMedicine {
     public List<MedicineEntity> listAll();
-    public int deletemedicine(int id);
-    public int updatemedicine(MedicineEntity med);
-    public int addmedicine(MedicineEntity med);
+    public boolean deletemedicine(int id);
+    public boolean updatemedicine(MedicineEntity med);
+    public boolean addmedicine(MedicineEntity med);
 }

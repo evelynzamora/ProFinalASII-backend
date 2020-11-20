@@ -5,12 +5,15 @@ import gt.com.clinica.clinicamedica.dao.EmployeeDao;
 import gt.com.clinica.clinicamedica.dao.PatientDao;
 import gt.com.clinica.clinicamedica.entity.EmployeeEntity;
 import gt.com.clinica.clinicamedica.entity.PersonEntity;
+import org.json.JSONObject;
 
+import javax.json.JsonException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
@@ -23,42 +26,115 @@ import java.util.List;
 public class PatientServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Date birth =null;
-        PersonEntity patient = new PersonEntity();
-        PatientDao dao = new PatientDao();
-        patient.setDpi(Integer.parseInt(request.getParameter("dpi")));
-        patient.setName(request.getParameter("name"));
-        patient.setSurname(request.getParameter("surname"));
-        patient.setAddress(request.getParameter("address"));
-        patient.setPhone(Integer.parseInt(request.getParameter("phone")));
-        try {
-            birth = new SimpleDateFormat("dd/MM/yyyy").parse(request.getParameter("birthdate"));
-        } catch (ParseException e) {
-            e.printStackTrace();
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+        PatientDao patientDao = new PatientDao();
+        PersonEntity person = new PersonEntity();
+
+        try{
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                jb.append(line);
+            }
+        }catch (Exception e){
+            throw e;
         }
-        patient.setBirthdate(birth);
-        patient.setContactphone(Integer.parseInt(request.getParameter("contactphone")));
-        try (PrintWriter out = response.getWriter()) {
+
+        try{
+            JSONObject jsonObject = new JSONObject(jb.toString());
+            person.setDpi(jsonObject.getInt("dpi"));
+            person.setName(jsonObject.getString("name"));
+            person.setSurname(jsonObject.getString("lastname"));
+            person.setAddress(jsonObject.getString("address"));
+            person.setPhone(jsonObject.getInt("phone"));
+            try {
+                birth = new SimpleDateFormat("dd/MM/yyyy").parse(jsonObject.getString("birthdate"));
+            } catch (ParseException e) {
+                throw new ServletException("Esta es excepcion de servlet");
+            }
+            person.setBirthdate(birth);
+            person.setContactphone(jsonObject.getInt("contact_phone"));
 
 
-            if ("create".equals(request.getParameter("btn_create"))) {
-                if (dao.addepatient(patient) > 0) {
-                    out.println("success");
-                }
+            if(patientDao.addepatient(person) == false){
+                throw new ServletException("Algo salio mal");
             }
-            if ("update".equals(request.getParameter("btn_update"))) {
-                if (dao.updatepatient(patient) > 0) {
-                    out.println("success");
-                }
-            }
-            if ("delete".equals(request.getParameter("btn_delete"))) {
-                if (dao.deletepatient(patient.getDpi()) > 0) {
-                    out.println("success");
-                }
-            }
+        }catch (JsonException e) {
+            throw new IOException("Error parsing JSON request");
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Date birth =null;
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+        PatientDao patientDao = new PatientDao();
+
+        try{
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                jb.append(line);
+            }
+        }catch (Exception e){
+            throw e;
+        }
+
+        try{
+            JSONObject jsonObject = new JSONObject(jb.toString());
+
+            if(patientDao.deletepatient(jsonObject.getInt("idPerson")) == false){
+                throw new ServletException("Algo salio mal");
+            }
+        }catch (JsonException e) {
+            throw new IOException("Error parsing JSON request");
+        }
+    }
+
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Date birth =null;
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+        PatientDao patientDao = new PatientDao();
+        PersonEntity person = new PersonEntity();
+
+        try{
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                jb.append(line);
+            }
+        }catch (Exception e){
+            throw e;
+        }
+
+        try{
+            JSONObject jsonObject = new JSONObject(jb.toString());
+            person.setIdPerson(jsonObject.getInt("idPerson"));
+            person.setDpi(jsonObject.getInt("dpi"));
+            person.setName(jsonObject.getString("name"));
+            person.setSurname(jsonObject.getString("lastname"));
+            person.setAddress(jsonObject.getString("address"));
+            person.setPhone(jsonObject.getInt("phone"));
+            try {
+                birth = new SimpleDateFormat("dd/MM/yyyy").parse(jsonObject.getString("birthdate"));
+            } catch (ParseException e) {
+                throw new ServletException("Esta es excepcion de servlet");
+            }
+            person.setBirthdate(birth);
+            person.setContactphone(jsonObject.getInt("contact_phone"));
+
+
+            if(patientDao.updatepatient(person) == false){
+                throw new ServletException("Algo salio mal");
+            }
+        }catch (JsonException e) {
+            throw new IOException("Error parsing JSON request");
+        }
+    }
+
+
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PatientDao dao = new PatientDao();
         List<PersonEntity> listPatient = dao.listAll();
         List <String> json = new LinkedList<>();
